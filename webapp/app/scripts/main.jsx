@@ -1,29 +1,38 @@
-'use strict';
-var UserView = React.createBackboneClass({
-    changeOptions: 'change:name', // DEFAULT is 'change',
-    render: function() {
-        return (
-          <div>
-              <h1>{this.getModel().get('name')}</h1>
-          </div>
-        );
-    }
-});
+'use strict'
 
-var user = new Backbone.Model();
-user.set({'name':'Tony'});
-var userView = UserView({model: user});
 
-// Mount your component directly
-React.renderComponent(userView, document.getElementById('element'));
+var CreatorsListView = require('./Creators/creators').CreatorsListView
+var ComicsListView = require('./Comics/comics').ComicsListView
 
-// Render as a subview
-var ProfileView = React.createClass({
+
+var PageView = React.createClass({
   render: function() {
       return (
-        <div>
-          <UserView model={this.props.user} />
+          <div>
+                        <div className='jumbotron'>
+                  <h1>The Marvel API Universe</h1>
+              </div>
+        <div className='container-fluid'>
+              <div className='row'>
+              <div id='creators' className='col-md-6 marvel-left'></div>
+              <div id='comics' className='col-md-6 marvel-right'></div>
+              </div>
+              <footer>
+                  <div className='span12'><a href='http://marvel.com'>Data provided by Marvel. © 2014 MARVEL</a></div>
+              </footer>
         </div>
+              </div>
       );
   }
 });
+
+var page = new Backbone.Model()
+
+var pageView = PageView({
+    model:page
+    });
+
+// Mount your component directly
+React.renderComponent(pageView, document.body);
+React.renderComponent(CreatorsListView({collection: new Backbone.Collection()}), document.getElementById('creators'))
+React.renderComponent(ComicsListView({collection: new Backbone.Collection()}), document.getElementById('comics'))

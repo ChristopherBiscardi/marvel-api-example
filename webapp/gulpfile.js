@@ -21,7 +21,7 @@ gulp.task('scripts', function () {
         .pipe($.size());
 });
 
-gulp.task('html', ['styles', 'scripts', 'jsx'], function () {
+gulp.task('html', ['styles', 'scripts', 'jsx', 'browserify'], function () {
     var jsFilter = $.filter('**/*.js');
     var cssFilter = $.filter('**/*.css');
 
@@ -88,7 +88,7 @@ gulp.task('connect', function () {
         });
 });
 
-gulp.task('serve', ['connect', 'styles', 'jsx'], function () {
+gulp.task('serve', ['connect', 'styles', 'jsx', 'browserify'], function () {
     require('opn')('http://localhost:9000');
 });
 
@@ -117,6 +117,17 @@ gulp.task('jsx', function () {
         .pipe(gulp.dest('.tmp/scripts'));
 });
 
+gulp.task('browserify', function() {
+    var browserify = require('gulp-browserify');
+    // Single entry point to browserify
+    gulp.src('.tmp/scripts/main.js')
+        .pipe(browserify({
+          insertGlobals : true,
+          debug : false // Can be made to account for dev/prod env
+        }))
+        .pipe(gulp.dest('.tmp/scripts'))
+});
+
 gulp.task('watch', ['connect', 'serve'], function () {
     var server = $.livereload();
 
@@ -134,6 +145,7 @@ gulp.task('watch', ['connect', 'serve'], function () {
     gulp.watch('app/styles/**/*.less', ['styles']);
     gulp.watch('app/scripts/**/*.js', ['scripts']);
     gulp.watch('app/scripts/**/*.jsx', ['jsx']);
+    gulp.watch('.tmp/scripts/main.js', ['browserify']);
     gulp.watch('app/images/**/*', ['images']);
     gulp.watch('bower.json', ['wiredep']);
 });
