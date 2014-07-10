@@ -15,18 +15,10 @@ module.exports.CreatorsListView = React.createBackboneClass({
                 var self = this;
                 console.log('done1');
                 setTimeout(function(){
-                    $.ajax({
-
-                        url: "//gateway.marvel.com:80/v1/public/creators?orderBy=firstName&limit=20&apikey=0e3f5d7c2e9a7d527bd626e2b5107aaf",
-                        dataType: 'json',
-                        success: function(data) {
-                            // This ignores offset, limit, etc. Should fix that.
-                            self.getCollection().reset(data.data.results);
-                            console.log('done2');
-                        }.bind(self),
-                        error: function(xhr, status, err) {
-                        }.bind(self)
-                    });
+                    self.getCollection().comparator = function(obj){
+                        return obj.get('firstName');
+                    }
+                    self.getCollection().sort()
                 }, 10000)
                 //--
             }.bind(this),
